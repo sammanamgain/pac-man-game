@@ -1,24 +1,30 @@
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import {canvas, canvasHeight, canvasWidth} from './constants.ts'
+import {Wall} from './class/wall.ts';
+import {Position} from './class/position.ts';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+canvas.width = canvasWidth;
+canvas.height = canvasHeight;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+
+const grid: string[][] = [['_', '_', '_', '_', '_', '_', '_', '_', '_', '_'],
+	['_', '_', '', '', '', '', '_', '_', '_', '_'],
+	['_', '_', '', '', '', '', '_', '_', '_', '_'],
+	['_', '', '_', '_', '', '', '', '', '_', '_'],
+	['_', '', '', '_', '', '', '', '', '', '_'],
+	['_', '_', '_', '_', '_', '_', '_', '_', '_', '_']]
+const walls: Wall[] = []
+grid.forEach((row: string[], i: number) => {
+	row.forEach((block: string, j: number) => {
+
+		switch (block) {
+			case '_':
+				walls.push(new Wall({position: new Position(50 * j, 50 * i), height: 50, width: 50}))
+				break;
+		}
+	})
+})
+
+walls.forEach((wall: Wall) => {
+	wall.draw()
+})
