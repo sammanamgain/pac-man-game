@@ -74,6 +74,7 @@ export class Player {
 					break;
 				case 'd':
 					keys.d.pressed=false;
+					break;
 			}
 		}))
 
