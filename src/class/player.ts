@@ -4,23 +4,31 @@ import {Position} from './position.ts'
 
 interface playerConstructor {
 	position: Position,
-	radius: number
+	radius: number,
+	imgSrc:string,
 }
 
 export class Player {
 	static canvas: HTMLCanvasElement = canvas
 	static ctx: CanvasRenderingContext2D = ctx;
-	position: Position;
-	radius: number;
-	vx: number;
-	vy: number;
+	public position: Position;
+	public radius: number;
+	public vx: number;
+	public vy: number;
+	private image:HTMLImageElement;
+	public imgSrc:string;
 
-	constructor({position, radius}: playerConstructor) {
+
+	constructor({position, radius,imgSrc}: playerConstructor) {
 		this.position = position;
 		this.radius = radius;
 		this.vx = 0;
 		this.vy = 0;
-		this.eventListener()
+		this.imgSrc=imgSrc;
+		this.image=new Image();
+		this.image.src=imgSrc;
+		this.eventListener();
+
 	}
 
 	draw(): void {
@@ -28,8 +36,9 @@ export class Player {
 
 		Player.ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
 		Player.ctx.fillStyle = 'yellow'
-		Player.ctx.fill()
+		Player.ctx.stroke()
 		Player.ctx.closePath();
+		Player.ctx.drawImage(this.image,150,44,30,30,this.position.x-this.radius,this.position.y-this.radius,this.radius*2,this.radius*2)
 	}
 
 	update(): void {

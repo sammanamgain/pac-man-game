@@ -1,5 +1,5 @@
 import './style.css'
-import {canvas, canvasHeight, canvasWidth, ctx, keys} from './constants.ts'
+import {canvas, canvasHeight, canvasWidth, ctx, keys,grid} from './constants.ts'
 import {Wall} from './class/wall.ts';
 import {Position} from './class/position.ts';
 import {Player} from './class/player.ts'
@@ -9,29 +9,167 @@ canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 
 
-const grid: string[][] = [['_', '_', '_', '_', '_', '_',  '_'],
 
-	['_', '', '', '', 'p', '',  '_',],
-	['_', '', '_', '',  '_', '', '_',],
-	['_', '', '', '',  '', '', '_',],
-
-	['_', '', '_', '',  '_', '', '_',],
-	['_', '', '', '',  '', '', '_',],
-	['_',  '_', '_', '_', '_', '_', '_',]]
 const walls: Wall[] = []
 let player: Player;
 grid.forEach((row: string[], i: number) => {
 	row.forEach((block: string, j: number) => {
-
 		switch (block) {
-			case '_':
-				walls.push(new Wall({position: new Position(50 * j, 50 * i), height: 50, width: 50}))
+
+			case '-':
+				walls.push(
+					new Wall({
+			position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeHorizontal.png'
+
+					})
+				);
 				break;
-			case  'p':
-				player = new Player({position: new Position(50 * j + 25, 50 * i + 25), radius: 20})
+			case '|':
+
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeVertical.png'
+
+					})
+				);
+				break;
+			case '1':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeCorner1.png'
+
+					})
+				);
+				break;
+			case '2':
+
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeCorner2.png'
+
+					})
+				);
+				break;
+			case '3':
+
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeCorner3.png'
+
+					})
+				);
+				break;
+			case '4':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeCorner4.png'
+
+					})
+				);
+				break;
+			case 'b':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/block.png'
+
+					})
+				);
+				break;
+			case '[':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/capLeft.png'
+
+					})
+				);
+				break;
+			case ']':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/capRight.png'
+
+					})
+				);
+				break;
+			case '_':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/capBottom.png'
+
+					})
+				);
+				break;
+			case '^':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/capTop.png'
+
+					})
+				);
+				break;
+			case '+':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeCross.png'
+
+					})
+				);
+				break;
+			case '5':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeConnectorTop.png'
+
+					})
+				);
+				break;
+			case '6':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeConnectorRight.png'
+
+					})
+				);
+				break;
+			case '7':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeConnectorBottom.png'
+
+					})
+				);
+				break;
+			case '8':
+				walls.push(
+					new Wall({
+						position: new Position(50 * j, 50 * i), height: 50, width: 50,
+						imgSrc:'./image/pipeConnectorLeft.png'
+
+					})
+				);
+				break;
+
 		}
-	})
-})
+	});
+});
+
+
+player=new Player({position:new Position(76,75),radius:20,imgSrc:'./image/pac-man.png'})
 
 
 function animate(): void {
@@ -46,28 +184,25 @@ function animate(): void {
 
 		for (let i = 0; i < walls.length; i++) {
 			const wall: Wall = walls[i]
-			if (checkCollision({...player, vy: -3}, wall)) {
+			if (checkCollision({...player, vy: -1}, wall)) {
 				player.vy = 0
 				break;
 			}
 			else {
-				player.vy = -3
+				player.vy = -1
 			}
-
-
 		}
-
 	}
 	else if (keys.s.pressed && keys.lastKey === 's') {
 
 		for (let i = 0; i < walls.length; i++) {
 			const wall: Wall = walls[i]
-			if (checkCollision({...player, vy: 3}, wall)) {
+			if (checkCollision({...player, vy: 1}, wall)) {
 				player.vy = 0
 				break;
 			}
 			else {
-				player.vy = 3
+				player.vy = 1
 			}
 		}
 	}
@@ -75,12 +210,12 @@ function animate(): void {
 
 		for (let i = 0; i < walls.length; i++) {
 			const wall: Wall = walls[i]
-			if (checkCollision({...player, vx: -3}, wall)) {
+			if (checkCollision({...player, vx: -1}, wall)) {
 				player.vx = 0
 				break;
 			}
 			else {
-				player.vx = -3
+				player.vx = -1
 			}
 		}
 	}
@@ -88,12 +223,12 @@ function animate(): void {
 
 		for (let i = 0; i < walls.length; i++) {
 			const wall: Wall = walls[i]
-			if (checkCollision({...player, vx: 3}, wall)) {
+			if (checkCollision({...player, vx: 1}, wall)) {
 				player.vx = 0
 				break;
 			}
 			else {
-				player.vx = 3
+				player.vx = 1
 			}
 		}
 	}
@@ -101,6 +236,7 @@ function animate(): void {
 		wall.draw()
 		// checking collision in current frame
 		if (checkCollision(player, wall)) {
+			console.log("collision  occured")
 
 			player.vx = 0;
 			player.vy = 0;
