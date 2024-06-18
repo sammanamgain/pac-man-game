@@ -1,92 +1,188 @@
-import {canvas, canvasHeight, canvasWidth, ctx} from '../constants.ts';
+import {canvas, canvasHeight, ctx, customgrid as grid} from '../constants.ts';
 import {Wall} from "../class/wall.ts";
 import {Position} from "../class/position.ts";
+import {Pallets} from "../class/Pallets.ts";
+import {Player} from "../class/player.ts";
 
-export function customMapBuilder(elements) {
+
+export function customMapBuilder(elements: (Wall | Player | Pallets)[], toolbar: (Wall | Player | Pallets)[]) {
 	const gridSize = 50;
-	const numRows = Math.floor(canvasHeight / gridSize);
-	const numCols = Math.floor(canvasWidth / gridSize);
-	const grid = Array.from({length: numRows}, () => Array(numCols).fill(0));
 	let selectedElements: string = '';
+	const walls = [];
 
-	// Draw the grid
+	for (let i = 0; i < grid.length - 3; i++) {
+
+		for (let j = 0; j < grid[i].length; j++) {
+			let block = grid[i][j];
+			let imgSrc = '';
+			switch (block) {
+				case '-':
+					imgSrc = './image/pipeHorizontal.png';
+					break;
+				case '|':
+					imgSrc = './image/pipeVertical.png';
+					break;
+				case '1':
+					imgSrc = './image/pipeCorner1.png';
+					break;
+				case '2':
+					imgSrc = './image/pipeCorner2.png';
+					break;
+				case '3':
+					imgSrc = './image/pipeCorner3.png';
+					break;
+				case '4':
+					imgSrc = './image/pipeCorner4.png';
+					break;
+				case 'b':
+					imgSrc = './image/block.png';
+					break;
+				case '[':
+					imgSrc = './image/capLeft.png';
+					break;
+				case ']':
+					imgSrc = './image/capRight.png';
+					break;
+				case '_':
+					imgSrc = './image/capBottom.png';
+					break;
+				case '^':
+					imgSrc = './image/capTop.png';
+					break;
+				case '+':
+					imgSrc = './image/pipeCross.png';
+					break;
+				case '5':
+					imgSrc = './image/pipeConnectorTop.png';
+					break;
+				case '6':
+					imgSrc = './image/pipeConnectorRight.png';
+					break;
+				case '7':
+					imgSrc = './image/pipeConnectorBottom.png';
+					break;
+				case '8':
+					imgSrc = './image/pipeConnectorLeft.png';
+					break;
+			}
+			if (imgSrc != '') {
+				walls.push(new Wall({
+					position: new Position(50 * j, 50 * i),
+					height: 50,
+					width: 50,
+					imgSrc,
+				}));
+			}
+		}
+
+	}
+
+
 	function drawGrid() {
-		for (let i = 0; i < numRows; i++) {
-			for (let j = 0; j < numCols; j++) {
+		for (let i = 0; i < grid.length - 3; i++) {
+			for (let j = 0; j < grid[0].length; j++) {
 				const x = j * gridSize;
 				const y = i * gridSize;
-				ctx.strokeRect(x, y, gridSize, gridSize);
+				if (grid[i][j] === 0) {
+					ctx.strokeRect(x, y, gridSize, gridSize);
+				}
 			}
 		}
 	}
 
+	walls.forEach((wall) => {
+		wall.draw();
+	});
 
-	let toolbar = [];
+
 	const toolbarItems = [
-		{imgSrc: './image/pipeHorizontal.png', label: 'Horizontal Pipe'},
-
+		{label: 'Wall'},
+		{label: 'Pallets'},
+		{label: 'Player'},
 	];
 
 	for (let i = 0; i < toolbarItems.length; i++) {
+
 		const toolbarItem = toolbarItems[i];
-		toolbar.push(new Wall({
-			position: new Position(50 * i, 50 * grid.length - 50),
-			height: 50,
-			width: 50,
-			imgSrc: toolbarItem.imgSrc,
-			label: "Wall" // Add a custom label property
-		}));
+
+		if (toolbarItem.label == 'Wall') {
+
+			toolbar.push(new Wall({
+				position: new Position(50 * i, grid.length * 50 - 50),
+				height: 50,
+				width: 50,
+				imgSrc: './image/block.png',
+				label: toolbarItem.label
+			}));
+		}
+		else if (toolbarItem.label == 'Pallets') {
+			toolbar.push(new Pallets(
+				{
+					position: new Position(50 * i + 25, grid.length * 50 - 50 + 25), radius: 10,
+					imgSrc: './image/pac-man.png'
+				})
+			)
+
+		}
+		else if (toolbarItem.label == 'Player') {
+			toolbar.push(
+				new Player({position: new Position(76, 75), radius: 20, imgSrc: './image/pac-man.png'})
+			)
+		}
 	}
 
-	toolbar.forEach((tool) => {
-		tool.draw();
-	});
+	function drawToolbar() {
+		toolbar.forEach((tool) => {
+			tool.draw();
+		});
+	}
 
 	// Initial draw
 	drawGrid();
+	drawToolbar();
 
-	// Add event listener for canvas
 	canvas.addEventListener('click', (e) => {
 		const rect = canvas.getBoundingClientRect();
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
 
 		// Check if the click is outside the toolbar area
-		if (y < canvasHeight - 2 * gridSize) {
+		if (y < canvasHeight - gridSize) {
 			const blockX = Math.floor(x / gridSize) * gridSize;
 			const blockY = Math.floor(y / gridSize) * gridSize;
-			console.log(`Clicked block at (${blockX}, ${blockY})`);
-			console.log(selectedElements)
+
 			if (selectedElements) {
 				if (selectedElements === 'Wall') {
-					console.log("image drawing started")
+					grid[blockY / 50][blockX / 50] = 'b';
 					let wall = new Wall({
 						position: new Position(blockX, blockY),
 						height: 50,
 						width: 50,
 						imgSrc: './image/block.png',
-						label: "Wall" // Add a custom label property
-					})
-					elements.push(wall)
+						label: "Wall"
+					});
+					elements.push(wall);
+				}
+
+				else if (selectedElements === 'Pallet') {
+					grid[blockY / 50][blockX / 50] = '.';
+					let wall = new Pallets(
+						{
+							position: new Position(blockX + 25, blockY + 25), radius: 10,
+							imgSrc: './image/pac-man.png'
+						})
+
+					elements.push(wall);
 				}
 			}
 		}
 		else {
-
 			// Handle toolbar click
-			const pixelData = ctx.getImageData(x, y, 1, 1).data;
-			const [r, g, b, a] = pixelData;
-
-			if (a === 255) {
-				const toolIndex = Math.floor(x / 50);
-				const clickedTool = toolbar[toolIndex];
-				console.log(`Clicked on toolbar item: ${clickedTool.label}`);
-				selectedElements = clickedTool.label as string
+			const toolIndex = Math.floor(x / 50);
+			const clickedTool = toolbar[toolIndex];
+			if (clickedTool) {
+				selectedElements = clickedTool.label as string;
 			}
 		}
 	});
-
-
-
-
 }

@@ -1,12 +1,11 @@
-import {grid} from "../constants.ts";
+
 import {Wall} from "../class/wall.ts";
 import {Position} from "../class/position.ts";
 import {Pallets} from "../class/Pallets.ts";
-
-
-export function drawWall(walls: Wall[], pallets: Pallets[]): void {
-	grid.forEach((row: string[], i: number) => {
-		row.forEach((block: string, j: number) => {
+export function drawWall(walls: Wall[], pallets: Pallets[],grid:(string|number)[][]): void {
+	console.log('received grid',grid)
+	grid.forEach((row: (string|number)[], i: number) => {
+		row.forEach((block: string|number, j: number) => {
 			switch (block) {
 				case '-':
 					walls.push(

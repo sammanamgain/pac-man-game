@@ -1,7 +1,7 @@
 export const canvas:HTMLCanvasElement=document.getElementById('canvas') as HTMLCanvasElement;
 export const ctx:CanvasRenderingContext2D=canvas.getContext('2d') as CanvasRenderingContext2D;
-export const canvasWidth:number=window.innerWidth;
-export const canvasHeight:number=window.innerHeight
+export const canvasWidth:number=550;
+export const canvasHeight:number=750
 export const keys={
 	'w':{
 		'pressed':false
@@ -17,7 +17,7 @@ export const keys={
 	},
 	"lastKey":''
 }
-export const grid:string[][] = [
+export const grid:(string|number)[][] = [
 	['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
 	['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
 	['|', '.', 'b', '.', '[', '7', ']', '.', 'b', '.', '|'],
@@ -31,4 +31,21 @@ export const grid:string[][] = [
 	['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
 	['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
 	['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3']
+]
+export const  customgrid:(string|number)[][]= [
+	['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3'],
+	['|', 0, 0, 0, 0, 0, 0, 0, 0, 0, '|'],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]

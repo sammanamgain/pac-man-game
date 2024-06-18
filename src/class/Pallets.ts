@@ -6,6 +6,7 @@ interface palletConstructor {
 	position: Position,
 	radius: number,
 	imgSrc:string,
+
 }
 
 export class Pallets {
@@ -16,6 +17,8 @@ export class Pallets {
 
 	private image:HTMLImageElement;
 	public imgSrc:string;
+	public label:string;
+
 
 	constructor({position, radius,imgSrc}: palletConstructor) {
 		this.position = position;
@@ -23,6 +26,8 @@ export class Pallets {
 		this.imgSrc=imgSrc;
 		this.image=new Image();
 		this.image.src=imgSrc;
+		this.label="Pallet"
+
 	}
 
 	draw(): void {

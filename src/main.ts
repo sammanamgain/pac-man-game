@@ -1,5 +1,5 @@
 import './style.css'
-import {canvas, canvasHeight, canvasWidth, ctx, keys} from './constants.ts'
+import {canvas, canvasHeight, canvasWidth, ctx, customgrid, grid, keys} from './constants.ts'
 import {Wall} from './class/wall.ts';
 import {Position} from './class/position.ts';
 import {Player} from './class/player.ts';
@@ -12,21 +12,31 @@ import {customMapBuilder} from './Pages/customMap.ts'
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 let gameState: String = 'start'
-
-
 const walls: Wall[] = []
 let player: Player;
+let customLevel: boolean = false;
 const pallets: Pallets[] = []
-const elements=[]
+const elements: (Wall | Player | Pallets)[] = []
+const toolbar: (Wall | Player | Pallets)[] = []
 player = new Player({position: new Position(76, 75), radius: 20, imgSrc: './image/pac-man.png'})
 
-drawWall(walls, pallets)
+function drawBoundary()
+{
+	ctx.clearRect(0,0,canvasWidth,canvasHeight)
 
+	if (customLevel) {
+		console.log(customgrid)
+		drawWall(walls, pallets, customgrid)
+		customLevel=false
+	}
+	else {
+		drawWall(walls, pallets, grid)
+	}
+}
 
+drawBoundary()
 function animate(): void {
 	ctx.clearRect(0, 0, canvasWidth, canvasHeight)
-
-
 	/**
 	 * based on gameState , respective function will be called
 	 * if gameState==='start', it will load starting screen
@@ -37,33 +47,34 @@ function animate(): void {
 	if (gameState === 'start') {
 		drawStartScreen()
 	}
-	else if (gameState==='custom')
-	{
-	customMapBuilder(elements)
-
-		console.log(elements)
-		elements.forEach(ele=>{
+	else if (gameState === 'custom') {
+		customMapBuilder(elements, toolbar)
+		elements.forEach(ele => {
+			ele.draw()
+		})
+		toolbar.forEach((ele) => {
 			ele.draw()
 		})
 	}
 	else {
-
+		if(customLevel)
+		{
+			drawBoundary()
+		}
 
 		// we need to use lastKey as when clicking two keys at once, we need to find the lastKey pressed
 		// suppose I am clicking w , then I pressed s with keeping w pressed ,as w is already pressed,it won't reach to elseif "s" block
-
-
 		// checking collision in next frame in advanced
-		if (keys.w.pressed && keys.lastKey === 'w') {
 
+		if (keys.w.pressed && keys.lastKey === 'w') {
 			for (let i = 0; i < walls.length; i++) {
 				const wall: Wall = walls[i]
-				if (checkCollision({...player, vy: -1}, wall)) {
+				if (checkCollision({...player, vy: -5}, wall)) {
 					player.vy = 0
 					break;
 				}
 				else {
-					player.vy = -1
+					player.vy = -5
 				}
 			}
 		}
@@ -71,12 +82,12 @@ function animate(): void {
 
 			for (let i = 0; i < walls.length; i++) {
 				const wall: Wall = walls[i]
-				if (checkCollision({...player, vy: 1}, wall)) {
+				if (checkCollision({...player, vy: 5}, wall)) {
 					player.vy = 0
 					break;
 				}
 				else {
-					player.vy = 1
+					player.vy = 5
 				}
 			}
 		}
@@ -84,12 +95,12 @@ function animate(): void {
 
 			for (let i = 0; i < walls.length; i++) {
 				const wall: Wall = walls[i]
-				if (checkCollision({...player, vx: -1}, wall)) {
+				if (checkCollision({...player, vx: -5}, wall)) {
 					player.vx = 0
 					break;
 				}
 				else {
-					player.vx = -1
+					player.vx = -5
 				}
 			}
 		}
@@ -97,12 +108,12 @@ function animate(): void {
 
 			for (let i = 0; i < walls.length; i++) {
 				const wall: Wall = walls[i]
-				if (checkCollision({...player, vx: 1}, wall)) {
+				if (checkCollision({...player, vx: 5}, wall)) {
 					player.vx = 0
 					break;
 				}
 				else {
-					player.vx = 1
+					player.vx = 5
 				}
 			}
 		}
@@ -113,7 +124,7 @@ function animate(): void {
 			wall.draw()
 			// checking collision in current frame
 			if (checkCollision(player, wall)) {
-				console.log("collision  occurred")
+				// console.log("collision  occurred")
 
 				player.vx = 0;
 				player.vy = 0;
@@ -133,9 +144,13 @@ window.addEventListener("keydown", ({key}) => {
 		gameState = 'play'
 
 	}
-	if (key==='c' && gameState==='start')
-	{
+	if (key === 'c' && gameState === 'start') {
 
-		gameState='custom'
+		gameState = 'custom'
+	}
+
+	if (key === 'l' && gameState === 'custom') {
+		customLevel = true
+		gameState = 'play';
 	}
 })

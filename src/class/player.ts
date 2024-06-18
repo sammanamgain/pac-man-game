@@ -17,6 +17,7 @@ export class Player {
 	public vy: number;
 	private image:HTMLImageElement;
 	public imgSrc:string;
+	public label:string;
 
 
 	constructor({position, radius,imgSrc}: playerConstructor) {
@@ -28,6 +29,7 @@ export class Player {
 		this.image=new Image();
 		this.image.src=imgSrc;
 		this.eventListener();
+		this.label='Player'
 
 	}
 
