@@ -1,8 +1,10 @@
 export const canvas:HTMLCanvasElement=document.getElementById('canvas') as HTMLCanvasElement;
 export const ctx:CanvasRenderingContext2D=canvas.getContext('2d') as CanvasRenderingContext2D;
 export const canvasWidth:number=550;
-export const canvasHeight:number=750
+export const canvasHeight:number=750;
+export const scoreSpan:HTMLElement=document.querySelector('#score') as HTMLElement
 export const keys={
+
 	'w':{
 		'pressed':false
 	},
